@@ -1,38 +1,63 @@
-// Funktio, joka hakee lounaslistat
-async function fetchLunchMenu() {
-  const response = await fetch('https://www.lounaspirtti.fi/ruokalista'); // Muuta tähän oikea URL
-  const data = await response.text();
-  const menuList = document.getElementById("lunch-menu");
+// Ravintoloiden URL-osoitteet
+const restaurants = [
+  { name: "Lounaspirtti", url: "https://www.lounaspirtti.fi/ruokalista" },
+  { name: "Ravintola Alibaba", url: "https://www.ravintolaalibaba.fi/lounas" },
+  { name: "Ravintola Jounin Kauppa", url: "https://www.jouninkauppa.fi/lounas" },
+  { name: "Pizzeria La Tavola", url: "https://www.pizzerialatavola.fi/lounas" }
+];
 
-  // Oletetaan, että saat HTML:n ja käytät regex tai muuta tekniikkaa saadaksesi menu
-  // Tässä esimerkissä oletetaan, että ruokalista on tietynlaista HTML-rakennetta
+// Funktio, joka hakee ja näyttää ravintoloiden lounaslistat
+async function fetchLunchMenus() {
+  const container = document.getElementById("lounas-container");
 
-  const menuItems = extractMenu(data); // Täytyy implementoida tämä funktio
-  menuList.innerHTML = ''; // Tyhjennä vanhat tiedot
+  // Tyhjennetään vanhat listat
+  container.innerHTML = '';
 
-  menuItems.forEach(item => {
-    const listItem = document.createElement("li");
-    listItem.textContent = item;
-    menuList.appendChild(listItem);
-  });
+  for (const restaurant of restaurants) {
+    // Haetaan ravintolan sivu
+    const response = await fetch(restaurant.url);
+    const data = await response.text();
+
+    // Tässä vaiheessa sinun täytyy käsitellä HTML-sisältö ja poimia lounaslistan tiedot
+    const menuItems = extractMenu(data);
+
+    // Luo HTML rakenteet lounaslistalle
+    const restaurantDiv = document.createElement("div");
+    restaurantDiv.classList.add("restaurant");
+
+    const title = document.createElement("h2");
+    title.textContent = `${restaurant.name} Lounas`;
+    restaurantDiv.appendChild(title);
+
+    const menuList = document.createElement("ul");
+    menuList.classList.add("menu");
+
+    menuItems.forEach(item => {
+      const listItem = document.createElement("li");
+      listItem.textContent = item;
+      menuList.appendChild(listItem);
+    });
+
+    restaurantDiv.appendChild(menuList);
+    container.appendChild(restaurantDiv);
+  }
 }
 
-// Funktio, joka "purkaa" lounaslistan HTML:n ja palauttaa ruoat
+// Funktio, joka purkaa HTML:n ja palauttaa lounasruoat (tarvitsee räätälöidä oikealle rakenteelle)
 function extractMenu(data) {
-  // Tämä on esimerkki, joka tarvitsee räätälöidä oikealle HTML-rakenteelle
+  // Tämä esimerkki käyttää vain yksinkertaista regexiä, mutta sinun täytyy käsitellä HTML-tietoja tarkemmin.
+  // Tässä esimerkissä oletetaan, että lounasruoat ovat <h2> tai <li> tageissa.
   const regex = /<h2>(.*?)<\/h2>/g; // Esimerkiksi h2-elementit
   const menuItems = [];
   let match;
-  
+
+  // Poimi kaikki vastaavat elementit
   while ((match = regex.exec(data)) !== null) {
     menuItems.push(match[1]);
   }
-  
+
   return menuItems;
 }
 
-// Hae lounaslistat heti, kun sivu latautuu
-fetchLunchMenu();
-
-// Päivitä lounaslistat kerran tunnissa
-setInterval(fetchLunchMenu, 60 * 60 * 1000); // 1 tunti
+// Lataa lounaslistat heti, kun sivu latautuu
+fetchLunchMenus();

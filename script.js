@@ -2,8 +2,8 @@
 const restaurants = [
   { name: "Lounaspirtti", url: "https://www.lounaspirtti.fi/ruokalista" },
   { name: "Ravintola Alibaba", url: "https://www.ravintolaalibaba.fi/lounas" },
-  { name: "Ravintola Jounin Kauppa", url: "https://www.jouninkauppa.fi/lounas" },
-  { name: "Pizzeria La Tavola", url: "https://www.pizzerialatavola.fi/lounas" }
+  { name: "Ravintola Leskirouva", url: "https://www.leskirouva.fi/lounas/" },
+  { name: "Ravintola Oskari", url: "https://ravintolaoskari.fi/tulosta_lounaslista/" }
 ];
 
 // Funktio, joka hakee ja näyttää ravintoloiden lounaslistat
